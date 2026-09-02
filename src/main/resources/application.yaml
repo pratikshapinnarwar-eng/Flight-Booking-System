@@ -1,11 +1,18 @@
 spring:
   application:
-    name: Booking
+    name: flight-booking-system
+
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: password
-    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/flight_booking
+    username: booking_admin
+    password: Book!ng2026
+    driver-class-name: org.postgresql.Driver
 
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    open-in-view: false
+
+server:
+  port: 8080
