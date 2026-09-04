@@ -1,11 +1,10 @@
 package com.flight.booking.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+/** What the client SENDS to log in. */
+@Data
 public class LoginRequest {
 
     @NotBlank(message = "Email is required")

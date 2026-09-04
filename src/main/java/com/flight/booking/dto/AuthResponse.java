@@ -1,21 +1,22 @@
 package com.flight.booking.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
- * What we send back after register or login.
- * No password field on purpose - the hash must never leave the server.
+ * What we SEND BACK after register or login.
+ *
+ * There is deliberately no password field. The User entity holds the password
+ * hash, and it must never leave the server - that is the single most important
+ * reason DTOs exist.
  */
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 public class AuthResponse {
 
     private Integer userId;
     private String userName;
     private String email;
-    private String phone;
+    private String role;
     private String message;
 }

@@ -3,67 +3,62 @@ package com.flight.booking.service;
 import com.flight.booking.dto.AuthResponse;
 import com.flight.booking.dto.LoginRequest;
 import com.flight.booking.dto.RegisterRequest;
-import com.flight.booking.model.User;
+import com.flight.booking.entity.User;
+import com.flight.booking.enums.Role;
 import com.flight.booking.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
-
 /**
- * All the business rules for registration and login live here.
- * The controller has none.
+ * All the business rules for registration and login. The controller has none.
  */
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
 
-    // BCrypt turns a password into a one-way hash. You can never turn the
-    // hash back into the password - that is exactly the point.
+    // BCrypt is a ONE-WAY hash. You can turn a password into a hash, but you
+    // can never turn the hash back into the password. Login works by hashing
+    // what was typed and comparing hashes - nothing is ever decrypted.
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    public AuthService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    public AuthResponse register(RegisterRequest req) {
 
-    public AuthResponse register(RegisterRequest request) {
-
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "An account with this email already exists");
+        if (userRepository.existsByEmail(req.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already registered");
         }
 
         User user = User.builder()
-                .userName(request.getUserName())
-                .email(request.getEmail())
-                .password(encoder.encode(request.getPassword()))  // never store plain text
-                .phone(request.getPhone())
-                .createdAt(LocalDateTime.now())
+                .userName(req.getUserName())
+                .email(req.getEmail())
+                .password(encoder.encode(req.getPassword()))   // never store plain text
+                .phone(req.getPhone())
+                .role(Role.USER)                               // server decides, not the client
                 .build();
 
         User saved = userRepository.save(user);
 
         return new AuthResponse(saved.getUserId(), saved.getUserName(),
-                saved.getEmail(), saved.getPhone(), "Registration successful");
+                saved.getEmail(), saved.getRole().name(), "Registration successful");
     }
 
-    public AuthResponse login(LoginRequest request) {
+    public AuthResponse login(LoginRequest req) {
 
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-                        "Invalid email or password"));
+        User user = userRepository.findByEmail(req.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED, "Invalid email or password"));
 
-        // matches() hashes what was typed and compares the two hashes.
-        // Nothing is ever decrypted.
-        if (!encoder.matches(request.getPassword(), user.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-                    "Invalid email or password");
+        if (!encoder.matches(req.getPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
         }
 
+        // Note both failures give the SAME message. Saying "no account with
+        // that email" would let someone discover which emails are registered.
         return new AuthResponse(user.getUserId(), user.getUserName(),
-                user.getEmail(), user.getPhone(), "Login successful");
+                user.getEmail(), user.getRole().name(), "Login successful");
     }
 }

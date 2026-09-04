@@ -3,11 +3,16 @@ package com.flight.booking.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+/**
+ * DTO = Data Transfer Object. What the client SENDS to register.
+ *
+ * Note there is no userId, no role and no createdAt. The client must not be
+ * able to set those - the server decides them. That is one of the main
+ * reasons we do not accept the User entity directly.
+ */
+@Data
 public class RegisterRequest {
 
     @NotBlank(message = "Name is required")
