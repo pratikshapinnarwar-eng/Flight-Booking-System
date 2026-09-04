@@ -1,6 +1,11 @@
-package com.flight.booking.entity;
+package com.flight.booking.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,9 +16,8 @@ import java.time.LocalDateTime;
 
 /**
  * Maps to the "users" table.
- *
- * The table is called "users", not "user", because USER is a reserved keyword
- * in PostgreSQL. The class can still be called User.
+ * The table is "users" and not "user" because USER is a reserved keyword
+ * in PostgreSQL.
  */
 @Entity
 @Table(name = "users")
