@@ -1,8 +1,8 @@
 package com.flight.booking.controller;
 
-import com.flight.booking.dto.AuthResponse;
-import com.flight.booking.dto.LoginRequest;
-import com.flight.booking.dto.RegisterRequest;
+import com.flight.booking.model.AuthResponse;
+import com.flight.booking.model.LoginRequest;
+import com.flight.booking.model.RegisterRequest;
 import com.flight.booking.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Receive the request, call the service, return the right status code.
- * No business logic here.
+ *
+ * Notice this class only imports from "model", never from "entity". The
+ * entity never reaches the controller layer, so the password hash can never
+ * be returned by accident.
  */
 @RestController
 @RequestMapping("/api/auth")

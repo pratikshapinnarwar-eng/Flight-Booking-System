@@ -16,10 +16,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * Maps to the "users" table. Named "users" and not "user" because USER is a
+ * Maps to the "users" table. Named "users" not "user" because USER is a
  * reserved keyword in PostgreSQL.
  *
- * createdAt and updatedAt come from BaseEntity.
+ * createdAt and updatedAt are inherited from BaseEntity.
  */
 @Entity
 @Table(name = "users")
@@ -48,9 +48,9 @@ public class User extends BaseEntity {
     private String phone;
 
     /**
-     * EnumType.STRING stores "USER" in the database.
-     * Never use the default ORDINAL - that stores 0 and 1, and reordering
-     * the enum later would silently change everyone's role.
+     * EnumType.STRING stores "USER" in the database. Never use the default
+     * ORDINAL - it stores 0 and 1, so reordering the enum later would
+     * silently change everyone's role.
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)

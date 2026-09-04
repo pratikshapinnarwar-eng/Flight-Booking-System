@@ -1,4 +1,4 @@
-package com.flight.booking.dto;
+package com.flight.booking.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,8 @@ import lombok.Data;
  * What we SEND BACK after register or login.
  *
  * There is deliberately no password field. The User entity holds the password
- * hash, and it must never leave the server - that is the single most important
- * reason DTOs exist.
+ * hash and it must never leave the server - that is the whole reason this
+ * class exists instead of returning User directly.
  */
 @Data
 @AllArgsConstructor

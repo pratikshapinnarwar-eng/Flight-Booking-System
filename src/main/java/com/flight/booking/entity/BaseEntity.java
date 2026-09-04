@@ -11,12 +11,12 @@ import java.time.LocalDateTime;
 /**
  * Audit fields shared by every entity.
  *
- * @MappedSuperclass means this is NOT a table of its own. Its columns get
- * copied into whichever entity extends it, so we write these two fields
- * once instead of repeating them everywhere.
+ * @MappedSuperclass means this is NOT a table. Its columns are copied into
+ * whichever entity extends it, so these two fields are written once instead
+ * of being repeated in all twelve entities.
  *
- * @PrePersist runs just before the first INSERT and @PreUpdate before every
- * UPDATE, so the timestamps look after themselves.
+ * @PrePersist runs before the first INSERT, @PreUpdate before every UPDATE,
+ * so the timestamps maintain themselves.
  */
 @MappedSuperclass
 @Data

@@ -1,4 +1,4 @@
-package com.flight.booking.dto;
+package com.flight.booking.model;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
