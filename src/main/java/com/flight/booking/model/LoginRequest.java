@@ -1,0 +1,15 @@
+package com.flight.booking.model;
+
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
+
+/** What the client SENDS to log in. */
+@Data
+public class LoginRequest {
+
+    @NotBlank(message = "Email is required")
+    private String email;
+
+    @NotBlank(message = "Password is required")
+    private String password;
+}
