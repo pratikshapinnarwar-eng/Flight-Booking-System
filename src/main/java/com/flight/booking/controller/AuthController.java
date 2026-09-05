@@ -1,5 +1,4 @@
-package com.flight.booking.controller;
-
+package com.flight.booking.controllercom.flight.booking.model.AuthResponse;
 import com.flight.booking.model.AuthResponse;
 import com.flight.booking.model.LoginRequest;
 import com.flight.booking.model.RegisterRequest;
@@ -8,10 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Receive the request, call the service, return the right status code.
@@ -24,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
+    @CrossOrigin(origins = "*")
 
     private final AuthService authService;
 
@@ -37,3 +34,9 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(req));
     }
 }
+@RestController
+@RequestMapping("/api/auth")
+@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
+public class AuthController
+
