@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = {\"http://localhost:4200\", \"http://localhost:3000\"}))
 
     private final AuthService authService;
 
