@@ -36,7 +36,7 @@ public class AuthController {
 }
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {\"http://localhost:4200\", \"http://localhost:3000\"}))
 @RequiredArgsConstructor
 public class AuthController
 
