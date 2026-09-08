@@ -1,4 +1,5 @@
-package com.flight.booking.controllercom.flight.booking.model.AuthResponse;
+package com.flight.booking.controller;
+
 import com.flight.booking.model.AuthResponse;
 import com.flight.booking.model.LoginRequest;
 import com.flight.booking.model.RegisterRequest;
@@ -7,20 +8,23 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Receive the request, call the service, return the right status code.
  *
- * Notice this class only imports from "model", never from "entity". The
- * entity never reaches the controller layer, so the password hash can never
- * be returned by accident.
+ * This class only imports from "model", never from "entity", so the password
+ * hash can never be returned by accident.
  */
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:3000"})
 @RequiredArgsConstructor
 public class AuthController {
-    @CrossOrigin(origins = {\"http://localhost:4200\", \"http://localhost:3000\"}))
 
     private final AuthService authService;
 
@@ -34,9 +38,3 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(req));
     }
 }
-@RestController
-@RequestMapping("/api/auth")
-@CrossOrigin(origins = {\"http://localhost:4200\", \"http://localhost:3000\"}))
-@RequiredArgsConstructor
-public class AuthController
-
