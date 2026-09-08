@@ -8,7 +8,7 @@ import com.flight.booking.model.RegisterRequest;
 import com.flight.booking.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -24,7 +24,8 @@ public class AuthService {
 
     // BCrypt is a ONE-WAY hash. Login works by hashing what was typed and
     // comparing the two hashes - nothing is ever decrypted.
-    private final PasswordEncoder encoder;
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
     public AuthResponse register(RegisterRequest req) {
 
         if (userRepository.existsByEmail(req.getEmail())) {
