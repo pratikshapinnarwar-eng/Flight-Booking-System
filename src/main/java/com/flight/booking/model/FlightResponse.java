@@ -6,11 +6,6 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * Flattened for the frontend. The entity holds nested Airline and Airport
- * objects; this pulls out just the fields the UI needs, plus a duration the
- * entity does not have at all.
- */
 @Data
 @AllArgsConstructor
 public class FlightResponse {
@@ -22,10 +17,14 @@ public class FlightResponse {
     private String airlineName;
     private String airlineCode;
 
+    private Integer aircraftId;
     private String aircraftModel;
 
+    private Integer departureAirportId;
     private String departureAirportCode;
     private String departureCity;
+
+    private Integer arrivalAirportId;
     private String arrivalAirportCode;
     private String arrivalCity;
 
