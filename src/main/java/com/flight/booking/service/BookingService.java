@@ -20,9 +20,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
-/**
- * The heart of the project. Everything else is CRUD; this is the real logic.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -36,10 +33,8 @@ public class BookingService {
     private final UserRepository userRepository;
 
     /**
-     * Creates a booking with one ticket per passenger.
-     *
-     * Everything happens in ONE transaction. If any step fails, nothing is
-     * written - no half-booked state where seats are held but no ticket exists.
+     * One transaction. If any step fails, nothing is written - no half-booked
+     * state where seats are held but no ticket exists.
      */
     @Transactional
     public BookingResponse create(BookingRequest req) {
@@ -69,21 +64,13 @@ public class BookingService {
                     "The same seat was selected more than once");
         }
 
-        List<Integer> passengerIds = req.getPassengers().stream()
-                .map(BookingRequest.PassengerSeat::getPassengerId).toList();
-        if (passengerIds.size() != new HashSet<>(passengerIds).size()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "The same passenger was selected more than once");
-        }
-
-        // LOCK the seat rows. Until this transaction ends, no other request can
-        // read or change them. This is what prevents two users booking the same
-        // seat at the same moment.
+        // Lock the seat rows so no other request can take them mid-transaction
         List<FlightSeat> seats = flightSeatRepository.lockByIds(seatIds);
 
         if (seats.size() != seatIds.size()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "One or more selected seats do not exist");
+                    "One or more selected seats do not exist. Check "
+                    + "GET /api/flight-seats/flight/" + req.getFlightId() + "/available");
         }
 
         Map<Integer, FlightSeat> seatMap = new HashMap<>();
@@ -91,7 +78,7 @@ public class BookingService {
             if (!fs.getFlight().getFlightId().equals(flight.getFlightId())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "Seat " + fs.getSeat().getSeatNumber()
-                        + " does not belong to this flight");
+                        + " does not belong to flight " + flight.getFlightId());
             }
             if (fs.getSeatStatus() != SeatStatus.AVAILABLE) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT,
@@ -105,7 +92,7 @@ public class BookingService {
                 .flight(flight)
                 .bookingDate(LocalDateTime.now())
                 .totalAmount(BigDecimal.ZERO)
-                .bookingStatus(BookingStatus.PENDING)   // CONFIRMED only after payment
+                .bookingStatus(BookingStatus.PENDING)
                 .build());
 
         BigDecimal total = BigDecimal.ZERO;
@@ -119,7 +106,8 @@ public class BookingService {
 
             if (!passenger.getUser().getUserId().equals(user.getUserId())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "That passenger does not belong to this user");
+                        "Passenger " + ps.getPassengerId()
+                        + " does not belong to user " + user.getUserId());
             }
 
             FlightSeat fs = seatMap.get(ps.getFlightSeatId());
@@ -141,18 +129,13 @@ public class BookingService {
         booking.setTotalAmount(total);
         ticketRepository.saveAll(tickets);
 
-        log.info("Created booking {} with {} tickets, total {}",
+        log.info("Booking {} created with {} tickets, total {}",
                 booking.getBookingId(), tickets.size(), total);
 
         return toResponse(booking, tickets);
     }
 
-    /**
-     * Cancels a booking and RELEASES the seats.
-     *
-     * Releasing is the step people forget. Without it the seats stay BOOKED
-     * forever and the flight silently sells out.
-     */
+    /** Cancels and RELEASES the seats back to AVAILABLE. */
     @Transactional
     public BookingResponse cancel(Integer bookingId) {
 
@@ -160,29 +143,28 @@ public class BookingService {
 
         if (booking.getBookingStatus() == BookingStatus.CANCELLED) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "This booking is already cancelled");
+                    "Booking " + bookingId + " is already cancelled");
         }
 
         List<Ticket> tickets = ticketRepository.findByBooking_BookingId(bookingId);
 
-        for (Ticket ticket : tickets) {
-            ticket.setTicketStatus(TicketStatus.CANCELLED);
-            ticket.setCancelledAt(LocalDateTime.now());
-            ticket.getFlightSeat().setSeatStatus(SeatStatus.AVAILABLE);  // give the seat back
+        for (Ticket t : tickets) {
+            t.setTicketStatus(TicketStatus.CANCELLED);
+            t.setCancelledAt(LocalDateTime.now());
+            t.getFlightSeat().setSeatStatus(SeatStatus.AVAILABLE);
         }
 
         booking.setBookingStatus(BookingStatus.CANCELLED);
         ticketRepository.saveAll(tickets);
 
-        log.info("Cancelled booking {} and released {} seats", bookingId, tickets.size());
+        log.info("Booking {} cancelled, {} seats released", bookingId, tickets.size());
 
         return toResponse(booking, tickets);
     }
 
     @Transactional(readOnly = true)
     public BookingResponse getById(Integer id) {
-        Booking booking = findOrThrow(id);
-        return toResponse(booking, ticketRepository.findByBooking_BookingId(id));
+        return toResponse(findOrThrow(id), ticketRepository.findByBooking_BookingId(id));
     }
 
     @Transactional(readOnly = true)
@@ -192,8 +174,6 @@ public class BookingService {
                 .map(b -> toResponse(b, ticketRepository.findByBooking_BookingId(b.getBookingId())))
                 .toList();
     }
-
-    // ---------- helpers ----------
 
     private Booking findOrThrow(Integer id) {
         return bookingRepository.findById(id)

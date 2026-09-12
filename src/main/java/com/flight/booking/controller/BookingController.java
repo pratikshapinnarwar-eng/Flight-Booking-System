@@ -18,7 +18,6 @@ public class BookingController {
 
     private final BookingService bookingService;
 
-    /** Creates the booking and one ticket per passenger. */
     @PostMapping
     public ResponseEntity<BookingResponse> create(@Valid @RequestBody BookingRequest req) {
         return ResponseEntity.status(HttpStatus.CREATED).body(bookingService.create(req));
@@ -29,13 +28,11 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.getById(id));
     }
 
-    /** Booking history for one user. */
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<BookingResponse>> getByUser(@PathVariable Integer userId) {
         return ResponseEntity.ok(bookingService.getByUser(userId));
     }
 
-    /** Cancels the booking and releases the seats back to AVAILABLE. */
     @PatchMapping("/{id}/cancel")
     public ResponseEntity<BookingResponse> cancel(@PathVariable Integer id) {
         return ResponseEntity.ok(bookingService.cancel(id));

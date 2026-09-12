@@ -6,12 +6,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 
-/**
- * A person who will actually travel.
- *
- * Distinct from User: one user account can save several passengers - family
- * members, colleagues - and book for any of them.
- */
+/** A person who travels. One user account can save several passengers. */
 @Entity
 @Table(name = "passenger")
 @Data
@@ -33,7 +28,6 @@ public class Passenger extends BaseEntity {
     @Column(name = "passenger_name", nullable = false, length = 100)
     private String passengerName;
 
-    /** LocalDate, not LocalDateTime - a birth date has no time component. */
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 

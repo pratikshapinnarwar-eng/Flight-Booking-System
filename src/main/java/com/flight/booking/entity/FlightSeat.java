@@ -5,11 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 /**
- * A physical Seat, on ONE specific Flight, with its availability.
- *
- * This is the table that makes the whole system work. Seat 12A can be BOOKED
- * on Monday's flight and AVAILABLE on Tuesday's, even though it is the same
- * physical seat on the same aircraft.
+ * A physical Seat on ONE specific Flight, with its availability.
+ * Seat 12A can be BOOKED on Monday's flight and AVAILABLE on Tuesday's.
  */
 @Entity
 @Table(name = "flight_seat",

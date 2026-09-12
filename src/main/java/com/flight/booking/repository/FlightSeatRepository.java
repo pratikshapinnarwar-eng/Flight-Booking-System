@@ -22,12 +22,8 @@ public interface FlightSeatRepository extends JpaRepository<FlightSeat, Integer>
 
     /**
      * PESSIMISTIC_WRITE locks these rows until the transaction ends.
-     *
-     * Without it, two users clicking the same seat at the same millisecond
-     * both read AVAILABLE and both book it. With it, the second transaction
-     * waits, then correctly sees BOOKED and is rejected.
-     *
-     * This is the single most important line in the booking flow.
+     * Without it, two users clicking the same seat simultaneously both read
+     * AVAILABLE and both book it.
      */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT fs FROM FlightSeat fs WHERE fs.flightSeatId IN :ids")

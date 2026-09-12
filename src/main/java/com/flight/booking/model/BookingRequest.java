@@ -1,5 +1,6 @@
 package com.flight.booking.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -9,26 +10,29 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * One booking, many passengers. Each passenger gets one seat.
+ * @JsonProperty names each field explicitly, so the JSON is snake_case whether
+ * or not the global Jackson naming strategy is set. No silent nulls.
  *
  * {
  *   "user_id": 1,
- *   "flight_id": 3,
+ *   "flight_id": 2,
  *   "passengers": [
- *     {"passenger_id": 1, "flight_seat_id": 10},
- *     {"passenger_id": 2, "flight_seat_id": 11}
+ *     {"passenger_id": 1, "flight_seat_id": 10}
  *   ]
  * }
  */
 @Data
 public class BookingRequest {
 
-    @NotNull(message = "User id is required")
+    @JsonProperty("user_id")
+    @NotNull(message = "user_id is required")
     private Integer userId;
 
-    @NotNull(message = "Flight id is required")
+    @JsonProperty("flight_id")
+    @NotNull(message = "flight_id is required")
     private Integer flightId;
 
+    @JsonProperty("passengers")
     @NotEmpty(message = "At least one passenger is required")
     @Size(max = 9, message = "Maximum 9 passengers per booking")
     @Valid
@@ -37,10 +41,12 @@ public class BookingRequest {
     @Data
     public static class PassengerSeat {
 
-        @NotNull(message = "Passenger id is required")
+        @JsonProperty("passenger_id")
+        @NotNull(message = "passenger_id is required")
         private Integer passengerId;
 
-        @NotNull(message = "Flight seat id is required")
+        @JsonProperty("flight_seat_id")
+        @NotNull(message = "flight_seat_id is required")
         private Integer flightSeatId;
     }
 }

@@ -8,11 +8,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * One passenger, in one seat, on one booking.
- *
- * The UNIQUE constraint on flight_seat_id is what makes it IMPOSSIBLE to sell
- * the same seat twice. Even if the application logic failed, the database
- * would reject the second insert.
+ * One passenger, one seat, one booking.
+ * The UNIQUE constraint on flight_seat_id makes selling a seat twice impossible.
  */
 @Entity
 @Table(name = "ticket",
@@ -48,7 +45,6 @@ public class Ticket extends BaseEntity {
     @Column(name = "ticket_status", nullable = false, length = 20)
     private TicketStatus ticketStatus;
 
-    /** Null unless the ticket has been cancelled. */
     @Column(name = "cancelled_at")
     private LocalDateTime cancelledAt;
 }

@@ -8,6 +8,4 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     List<Booking> findByUser_UserIdOrderByBookingDateDesc(Integer userId);
-
-    List<Booking> findByFlight_FlightId(Integer flightId);
 }

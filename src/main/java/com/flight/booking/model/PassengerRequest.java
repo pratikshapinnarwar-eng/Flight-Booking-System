@@ -1,5 +1,6 @@
 package com.flight.booking.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -8,25 +9,31 @@ import java.time.LocalDate;
 @Data
 public class PassengerRequest {
 
-    @NotNull(message = "User id is required")
+    @JsonProperty("user_id")
+    @NotNull(message = "user_id is required")
     private Integer userId;
 
-    @NotBlank(message = "Passenger name is required")
-    @Size(max = 100, message = "Name must be at most 100 characters")
+    @JsonProperty("passenger_name")
+    @NotBlank(message = "passenger_name is required")
+    @Size(max = 100)
     private String passengerName;
 
-    @Past(message = "Date of birth must be in the past")
+    @JsonProperty("date_of_birth")
+    @Past(message = "date_of_birth must be in the past")
     private LocalDate dateOfBirth;
 
-    @Pattern(regexp = "MALE|FEMALE|OTHER", message = "Gender must be MALE, FEMALE or OTHER")
+    @JsonProperty("gender")
+    @Pattern(regexp = "MALE|FEMALE|OTHER", message = "gender must be MALE, FEMALE or OTHER")
     private String gender;
 
-    @Size(max = 60, message = "Nationality must be at most 60 characters")
+    @JsonProperty("nationality")
+    @Size(max = 60)
     private String nationality;
 
-    @Size(max = 30, message = "Passport number must be at most 30 characters")
+    @JsonProperty("passport_no")
+    @Size(max = 30)
     private String passportNo;
 
-    @Future(message = "Passport expiry must be in the future")
+    @JsonProperty("passport_expiry")
     private LocalDate passportExpiry;
 }

@@ -35,7 +35,7 @@ public class PassengerService {
                     "A passenger with this passport number already exists");
         }
 
-        Passenger passenger = Passenger.builder()
+        Passenger p = Passenger.builder()
                 .user(user)
                 .passengerName(req.getPassengerName())
                 .dateOfBirth(req.getDateOfBirth())
@@ -45,7 +45,7 @@ public class PassengerService {
                 .passportExpiry(req.getPassportExpiry())
                 .build();
 
-        return toResponse(passengerRepository.save(passenger));
+        return toResponse(passengerRepository.save(p));
     }
 
     @Transactional(readOnly = true)
@@ -57,18 +57,6 @@ public class PassengerService {
     @Transactional(readOnly = true)
     public PassengerResponse getById(Integer id) {
         return toResponse(findOrThrow(id));
-    }
-
-    @Transactional
-    public PassengerResponse update(Integer id, PassengerRequest req) {
-        Passenger p = findOrThrow(id);
-        p.setPassengerName(req.getPassengerName());
-        p.setDateOfBirth(req.getDateOfBirth());
-        p.setGender(req.getGender() == null ? null : Gender.valueOf(req.getGender()));
-        p.setNationality(req.getNationality());
-        p.setPassportNo(req.getPassportNo());
-        p.setPassportExpiry(req.getPassportExpiry());
-        return toResponse(passengerRepository.save(p));
     }
 
     @Transactional

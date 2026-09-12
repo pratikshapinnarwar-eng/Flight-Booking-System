@@ -23,7 +23,6 @@ public class PassengerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(passengerService.create(req));
     }
 
-    /** GET /api/passengers/user/1 - all passengers saved by one user */
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<PassengerResponse>> getByUser(@PathVariable Integer userId) {
         return ResponseEntity.ok(passengerService.getByUser(userId));
@@ -32,12 +31,6 @@ public class PassengerController {
     @GetMapping("/{id}")
     public ResponseEntity<PassengerResponse> getById(@PathVariable Integer id) {
         return ResponseEntity.ok(passengerService.getById(id));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<PassengerResponse> update(@PathVariable Integer id,
-                                                    @Valid @RequestBody PassengerRequest req) {
-        return ResponseEntity.ok(passengerService.update(id, req));
     }
 
     @DeleteMapping("/{id}")

@@ -7,10 +7,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * One booking = one transaction by one user for one flight.
- * A family of four makes ONE booking and receives FOUR tickets.
- */
+/** One transaction by one user for one flight. Many tickets hang off it. */
 @Entity
 @Table(name = "booking")
 @Data
